@@ -75,16 +75,14 @@ object ProjectPlugin extends AutoPlugin {
     connectInput in run := true,
     cancelable in Global := true,
 
-    scalaOrganization := "org.typelevel",
-    crossScalaVersions:=  List("2.11.8", "2.12.1"),
-    scalaVersion      := "2.12.1",
+    crossScalaVersions :=  List("2.11.8", "2.12.1"),
+    scalaVersion       := "2.12.1",
 
     scalacOptions ++= Seq(
       "-Xfatal-warnings",
       "-Ywarn-unused-import",
       "-Yno-predef",
-      "-Ypartial-unification",
-      "-Yliteral-types"),
+      "-Ypartial-unification"),
 
     scalacOptions := (CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) => scalacOptions.value

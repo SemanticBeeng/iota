@@ -1,6 +1,7 @@
 lazy val root = (project in file("."))
   .settings(noPublishSettings)
   .aggregate(coreJVM, coreJS)
+  .aggregate(testsJVM, testsJS)
   .aggregate(examplesJVM, examplesJS)
   .aggregate(bench)
 
@@ -8,17 +9,29 @@ lazy val core = module("core", hideFolder = true)
   .settings(scalaMacroDependencies)
   .settings(yax(file("modules/core/src/main/scala"), Compile,
     yaxScala = true))
-  .settings(yax(file("modules/core/src/test/scala"), Test,
-    yaxPlatform = true))
   .crossDepSettings(
     %%("cats-core", V.cats),
-    %%("cats-free", V.cats),
+    %%("cats-free", V.cats))
+
+lazy val coreJVM = core.jvm
+lazy val coreJS  = core.js
+
+lazy val tests = module("tests", hideFolder = true)
+  .dependsOn(core)
+  .settings(noPublishSettings)
+  .settings(scalaMacroDependencies)
+  .settings(yax(file("modules/tests/src/test/scala"), Test,
+    yaxPlatform = true))
+  .settings(
+    scalaOrganization := "org.typelevel",
+    scalacOptions     += "-Yliteral-types")
+  .crossDepSettings(
     %%("scalacheck")      % "test",
     %%("shapeless")       % "test",
     %%("scheckShapeless") % "test")
 
-lazy val coreJVM = core.jvm
-lazy val coreJS  = core.js
+lazy val testsJVM = tests.jvm
+lazy val testsJS  = tests.js
 
 lazy val examples = module("examples")
   .dependsOn(core)
